@@ -30,8 +30,6 @@ const short height = 15; // Высота окна
 char visibleMap[width][height]; // Видимая часть карты
 
 bool jumpBlock; // Блокировка возможности прыжка
-int jumpTimeBlock; // Время блокировка прыжка
-int jumpCurrentTimeBlock; // Прошедшее время блокировки прыжка
 int jumpHeight; // Высота прыжка
 
 bool jump; // Состояние персонажа (прыжок)
@@ -48,9 +46,7 @@ void Setup() {
     jump = false;
     x = width / 2;
     y = 0;
-    jumpHeight = 2;
-    jumpTimeBlock = jumpHeight;
-    jumpCurrentTimeBlock = 0;
+    jumpHeight = 3;
 
     DisableVisibleConsoleCursor();
     SettingConsoleWindows();
@@ -118,13 +114,10 @@ void Logic() {
         jumpBlock = true;
     }
     else {
-        if (visibleMap[x][y + 1] != 'Z') y++;
-        
-        if (jumpCurrentTimeBlock < jumpBlock) {
-            jumpCurrentTimeBlock++;
+        if (visibleMap[x][y + 1] != 'Z') {
+            y++;
         }
         else {
-            jumpCurrentTimeBlock = 0;
             jumpBlock = false;
         }
     }
