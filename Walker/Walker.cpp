@@ -14,12 +14,15 @@ void SettingConsoleWindows(); // Настройка окна консоли
 void SettingConsoleFont(); // Настройка шрифта консоли
 void DisableVisibleConsoleCursor(); // Отключение видимости курсора консоли
 void SetPositionCursor(int x, int y); // Установка позиции курсора для отрисоки элементов
+void ClearMap(); // Зачистка карты он "мусора"
 void GenMap(); // Генерация карты
 void Logic(); // Логика
 void DrawObject(); // Отрисовка объектов
 void Draw(); // Отрисовка карты
 void Input(); // Получение нажатий с клавиатуры
 char CheckInputChar(char inputChar); // Поддержка всех символов при нажатии (QqЙй)
+
+LPCWSTR ConsoleTitle = L"Бродилка v0.03"; // Наименование окна консоли приложения
 
 short delay = 100; // Задержка отрисовки
 bool gameOver = false; // Выход из приложения
@@ -51,12 +54,14 @@ void Setup() {
     DisableVisibleConsoleCursor();
     SettingConsoleWindows();
     SettingConsoleFont();
+    ClearMap();
     GenMap();
     Draw();
 }
 
 // Настройка окна консоли
 void SettingConsoleWindows() {
+    SetConsoleTitleW(ConsoleTitle);
     HANDLE out_handle = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD crd = { width, height + 1 };
     SMALL_RECT src = { 0, 0, crd.X - 1, crd.Y - 1 };
@@ -90,6 +95,15 @@ void SetPositionCursor(int x, int y) {
     position.X = x;
     position.Y = y;
     SetConsoleCursorPosition(hConsole, position);
+}
+
+// Зачистка карты он "мусора"
+void ClearMap() {
+    for (int w = 0; w < width; w++) {
+        for (int h = 0; h < height; h++) {
+            visibleMap[w][h] = ' ';
+        }
+    }
 }
 
 // Генерация карты
