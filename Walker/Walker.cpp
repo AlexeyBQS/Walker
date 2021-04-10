@@ -41,8 +41,12 @@ short y; // Позиция персонажа по вертикали
 short xOld; // Предыдущая позиция персонажа по горизонтали
 short yOld; // Предыдущая позиция персонажа по вертикали
 
-char direction[] = "wasd"; // Передвижение;
+char direction[] = "wasd"; // Передвижение
 short choiseDirection; // Поиск нажатой клавиши
+
+const char imageEmpty = ' '; // Изображение пустоты
+const char imageBlock = 'Z'; // Изображение блока земли
+const char imagePerson = '0'; // Изображение блока персонажа
 
 // Установка параметров
 void Setup() { 
@@ -102,7 +106,7 @@ void SetPositionCursor(int x, int y) {
 void ClearMap() {
     for (int w = 0; w < width; w++) {
         for (int h = 0; h < height; h++) {
-            visibleMap[w][h] = ' ';
+            visibleMap[w][h] = imageEmpty;
         }
     }
 }
@@ -116,7 +120,7 @@ void GenMap() {
         gen = 1 + rand() % (height / 2 - 1);
 
         for (int h = 0; h < gen; h++) {
-            visibleMap[w][height - 1 - h] = 'Z';
+            visibleMap[w][height - 1 - h] = imageBlock;
         }
     }
 }
@@ -129,7 +133,7 @@ void Logic() {
         jumpBlock = true;
     }
     else {
-        if (visibleMap[x][y + 1] != 'Z') {
+        if (visibleMap[x][y + 1] != imageBlock) {
             y++;
         }
         else {
@@ -147,7 +151,7 @@ void DrawObject() {
     xOld = x;
     yOld = y;
 
-    visibleMap[x][y] = '0';
+    visibleMap[x][y] = imagePerson;
 }
 
 // Отрисовка карты
@@ -181,12 +185,12 @@ void Input() {
 
                 break;
             case 'a':
-                if (x >= 0 && visibleMap[x - 1][y] != 'Z') {
+                if (x >= 0 && visibleMap[x - 1][y] != imageBlock) {
                     x--;
                 }
                 break;
             case 'd':
-                if (x < width - 1 && visibleMap[x + 1][y] != 'Z') {
+                if (x < width - 1 && visibleMap[x + 1][y] != imageBlock) {
                     x++;
                 }
                 break;
