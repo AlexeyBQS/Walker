@@ -47,6 +47,7 @@ short choiseDirection; // Поиск нажатой клавиши
 // Установка параметров
 void Setup() { 
     jump = false;
+    jumpBlock = true;
     x = width / 2;
     y = 0;
     jumpHeight = 3;
