@@ -9,8 +9,10 @@
 
 using namespace std;
 
+
+// Список методов
 void Setup(); // Установка параметров
-void SettingConsoleWindows(); // Настройка окна консоли
+void SettingConsoleWindow(); // Настройка окна консоли
 void SettingConsoleFont(); // Настройка шрифта консоли
 void DisableVisibleConsoleCursor(); // Отключение видимости курсора консоли
 void SetPositionCursor(int x, int y); // Установка позиции курсора для отрисоки элементов
@@ -21,19 +23,23 @@ void DrawObject(); // Отрисовка объектов
 void Draw(); // Отрисовка карты
 void Input(); // Получение нажатий с клавиатуры
 char CheckInputChar(char inputChar); // Поддержка всех символов при нажатии (QqЙй)
+void StartGame(); // Запуск игры
 
-LPCWSTR ConsoleTitle = L"Бродилка v0.03"; // Наименование окна консоли приложения
 
-short delay = 100; // Задержка отрисовки
+const LPCWSTR ConsoleTitle = L"Бродилка v0.03 Build 1"; // Наименование окна консоли приложения
+const LPCWSTR FontFamily = L"Lucida Console"; // Шрифт отрисовки
+const short FontSize = 25; // Размер шрифта отрисовки
+
+short delay = 45; // Задержка отрисовки
 bool gameOver = false; // Выход из приложения
 
-const short width = 50; // Ширина окна
+const short width = 120; // Ширина окна
 const short height = 15; // Высота окна
 
 char visibleMap[width][height]; // Видимая часть карты
 
 bool jumpBlock; // Блокировка возможности прыжка
-int jumpHeight; // Высота прыжка
+short jumpHeight; // Высота прыжка
 
 bool jump; // Состояние персонажа (прыжок)
 short x; // Позиция персонажа по горизонтали
@@ -46,7 +52,7 @@ short choiseDirection; // Поиск нажатой клавиши
 
 const char imageEmpty = ' '; // Изображение пустоты
 const char imageBlock = 'Z'; // Изображение блока земли
-const char imagePerson = '0'; // Изображение блока персонажа
+const char imagePerson = '0'; // Изображение персонажа
 
 // Установка параметров
 void Setup() { 
@@ -54,10 +60,10 @@ void Setup() {
     jumpBlock = true;
     x = width / 2;
     y = 0;
-    jumpHeight = 3;
+    jumpHeight = 6;
 
     DisableVisibleConsoleCursor();
-    SettingConsoleWindows();
+    SettingConsoleWindow();
     SettingConsoleFont();
     ClearMap();
     GenMap();
@@ -65,7 +71,7 @@ void Setup() {
 }
 
 // Настройка окна консоли
-void SettingConsoleWindows() {
+void SettingConsoleWindow() {
     SetConsoleTitleW(ConsoleTitle);
     HANDLE out_handle = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD crd = { width, height + 1 };
@@ -80,8 +86,8 @@ void SettingConsoleFont() {
     CONSOLE_FONT_INFOEX fontInfo;
     fontInfo.cbSize = sizeof(fontInfo);
     GetCurrentConsoleFontEx(hConsole, TRUE, &fontInfo);
-    wcscpy(fontInfo.FaceName, L"Lucida Console");
-    fontInfo.dwFontSize.Y = 20;
+    wcscpy(fontInfo.FaceName, FontFamily);
+    fontInfo.dwFontSize.Y = FontSize;
     SetCurrentConsoleFontEx(hConsole, TRUE, &fontInfo);
 }
 
@@ -113,7 +119,6 @@ void ClearMap() {
 
 // Генерация карты
 void GenMap() {
-    srand(time(NULL));
     int gen = 0;
     //int genOld = 0;
     for (int w = 0; w < width; w++) {
@@ -145,7 +150,7 @@ void Logic() {
 // Отрисовка объектов
 void DrawObject() {
     if (xOld != x || yOld != y) {
-        visibleMap[xOld][yOld] = ' ';
+        visibleMap[xOld][yOld] = imageEmpty;
     }
 
     xOld = x;
@@ -203,6 +208,11 @@ void Input() {
         case 'w':
             jump = true;
             break;
+
+        case ' ':
+
+            break;
+
         case 'q':
             gameOver = true;
             break;
@@ -227,11 +237,8 @@ char CheckInputChar(char iChar) {
     return iChar;
 }
 
-int main()
-{
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
-
+// Запуск игры
+void StartGame() {
     Setup();
 
     while (!gameOver) {
@@ -239,8 +246,20 @@ int main()
         Logic();
         DrawObject();
         Draw();
-        Sleep(100); // Задержка обработки
+        Sleep(delay);
     }
+}
+
+// Точка входа в программу
+int main()
+{
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    srand(time(NULL));
+
+    StartGame();
+
+    system("pause");
 
     return 0;
 }
